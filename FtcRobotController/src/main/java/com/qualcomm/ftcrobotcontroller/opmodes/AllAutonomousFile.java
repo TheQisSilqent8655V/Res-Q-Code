@@ -48,7 +48,7 @@ public class AllAutonomousFile extends DE {
 
     /*
      * This thread constantly calculates the gyro heading
-     * adjust the gt variable to toggle sensitivity
+     * adjust the gyrothreshold variable to toggle sensitivity
      */
     Runnable calcDaGyro = new Runnable() {
         public void run() {
