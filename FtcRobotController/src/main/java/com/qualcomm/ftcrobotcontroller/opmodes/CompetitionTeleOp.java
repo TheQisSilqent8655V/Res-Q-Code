@@ -404,6 +404,11 @@ public class CompetitionTeleOp extends DE {
         AClimber.setPosition(aclimberposition);
     }
     
+    /*
+     * This is the teleOp recorder that can record an autonomous using time
+     * Drive using joysticks, press right bumper to stop and look at movements
+     * Use the bumpers to cycle through movements after stopping
+     */
     void teleOpRecorder()
     {
         boolean running = true;
