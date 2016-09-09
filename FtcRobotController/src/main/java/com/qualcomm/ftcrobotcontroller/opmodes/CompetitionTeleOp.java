@@ -1,6 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 import android.util.Log;
-
+import java.util.ArrayList;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -35,6 +35,11 @@ public class CompetitionTeleOp extends DE {
     // Thread Variables
     int daValue = 0;
     String whatarestevensjoystickscontrolling = "The Wheels";
+    
+    // TeleOp Recorder variables
+    ArrayList teleRecorderList = new ArrayList();
+    double currentrightspeed = 0.0;
+    double currentleftspeed = 0.0;
 
 
     /*
@@ -398,9 +403,62 @@ public class CompetitionTeleOp extends DE {
         aclimberposition = Range.clip(aclimberposition, ACLIMBER_MIN_VAL, ACLIMBER_MAX_VAL);
         AClimber.setPosition(aclimberposition);
     }
+    
+    void teleOpRecorder()
+    {
+        boolean running = true;
+        while(running)
+        {
+            long starttime = System.currentTimeMillis();
+            currentrightspeed = gamepad1.right_stick_y;
+            currentleftspeed = gamepad1.left_stick_y;
+            while(currentrightspeed == gamepad1.right_stick_y && currentleftspeed == gamepad1.left_stick_y)
+            {
+                runRightWheels(currentrightspeed);
+                runLeftWheels(currentrightspeed);
+                if(gamepad1.right_bumper)
+                {
+                    while(gamepad1.right_bumper)
+                    {
+                        
+                    }
+                    running = false;
+                    break;
+                }
+            }
+            long totaltime = System.currentTimeMillis() - starttime;
+            teleRecorderList.add(currentrightspeed);
+            teleRecorderList.add(currentleftspeed);
+            teleRecorderList.add(totaltime);
+        }
+        int loc = 0;
+        while(true)
+        {
+            if(gamepad1.right_bumper && loc < (teleRecorderList.size() - 4))
+            {
+                while(gamepad1.right_bumper)
+                {
+                    
+                }
+                loc += 3;
+            }
+            if(gamepad1.left_bumper && loc > 0)
+            {
+                while(gamepad1.left_bumper)
+                {
+                       
+                }
+                loc -= 3;
+            }
+            telemetry.addData("Right Speed - ", teleRecorderList.get(loc));
+            telemetry.addData("Left Speed - ", teleRecorderList.get(loc + 1));
+            telemetry.addData("Time - ", teleRecorderList.get(loc + 2));
+        }
+    }
 
     /*
      * Main function for competition
+     * We commented some thihngs out for demos and outreach
      */
     void twoControllerTeleOp() {
         //controlBucket();
